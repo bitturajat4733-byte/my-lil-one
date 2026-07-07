@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday,  MY LIL SWEETHEART ✨</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Icons & GSAP for Smooth Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --accent-primary: #ff3e8d; /* Electric Pink */
+            --accent-secondary: #7000ff; /* Deep Purple */
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Custom Cursor */
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- Custom Cursor --- */
+        #cursor {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+
+        /* --- Preloader / Landing --- */
+        #hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+            padding: 20px;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 10vw, 8rem);
+            line-height: 1;
+            margin-bottom: 20px;
+            background: linear-gradient(to bottom, #fff, #666);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            animation: bounce 2s infinite;
+        }
+
+        /* --- Bento Grid Section --- */
+        .section-padding {
+            padding: 100px 5%;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 300px);
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .bento-item {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .bento-item:hover {
+            border-color: var(--accent-primary);
+            transform: scale(1.02);
+        }
+
+        .large { grid-column: span 2; grid-row: span 2; }
+        .tall { grid-row: span 2; }
+
+        .bento-item h3 { font-size: 1.5rem; margin-bottom: 10px; color: var(--accent-primary); }
+        .bento-item p { color: var(--text-dim); font-size: 0.95rem; }
+
+        /* --- Interactive Candle Section --- */
+        .interactive-section {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .cake-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            cursor: pointer;
+        }
+
+        .flame {
+            width: 20px;
+            height: 35px;
+            background: #ffae00;
+            border-radius: 50% 50% 20% 20%;
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 20px #ffae00;
+            animation: flicker 0.1s infinite alternate;
+        }
+
+        .flame.extinguished {
+            display: none;
+        }
+
+        .candle {
+            width: 10px;
+            height: 50px;
+            background: white;
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px;
+        }
+
+        .cake-body {
+            width: 160px;
+            height: 100px;
+            background: #442c2c;
+            border-radius: 10px 10px 0 0;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-bottom: 8px solid var(--accent-primary);
+        }
+
+        /* --- Letter Section --- */
+        .letter-section {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 150px 20px;
+        }
+
+        .letter-content {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--text-main);
+            opacity: 0;
+        }
+
+        /* --- Animations --- */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(1); }
+            100% { transform: translateX(-50%) scale(1.1) rotate(2deg); }
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 900px) {
+            .bento-grid {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto;
+            }
+            .large { grid-column: span 2; height: 300px; }
+            .tall { grid-column: span 1; height: 300px; }
+            .hero-title { font-size: 4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="cursor"></div>
+
+    <!-- Section 1: Hero -->
+    <section id="hero">
+        <h1 class="hero-title" id="mainTitle">Happy <br>Birthday.</h1>
+        <p style="color: var(--accent-primary); font-weight: 600; opacity: 0;" id="heroSub">TO THE MOST SPECIAL PERSON</p>
+        <div class="scroll-indicator">Scroll Slowly</div>
+    </section>
+
+    <!-- Section 2: The Bento Story -->
+    <section class="section-padding">
+        <div class="bento-grid">
+            <div class="bento-item large">
+                <h3>01. Cherishing Energy</h3>
+                <p>You have this way of making everything brighter. Just by being in the room, the mood shifts and the world feels a little more manageable.</p>
+            </div>
+            <div class="bento-item">
+                <h3>02. Celebrating Kindness</h3>
+                <p>Pure, genuine, and rare. Never change that.</p>
+            </div>
+            <div class="bento-item">
+                <h3>03. Acknowledging Growth</h3>
+                <p>Watching you conquer last year was a privilege and this coming year is  already yours.</p>
+            </div>
+            <div class="bento-item tall">
+                <h3>04. SyncingVibe</h3>
+                <p>In a world of noise, you are the most beautiful melody. A perfect balance of chaos and calm.</p>
+            </div>
+            <div class="bento-item">
+                <h3>05. EnduringStrength</h3>
+                <p>Stronger than you know, braver than you feel.</p>
+            </div>
+            <div class="bento-item">
+                <h3>06. Today 8 of July</h3>
+                <p>Is all about celebrating the fact that you exist.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Interactive Cake -->
+    <section class="interactive-section">
+        <h2 style="margin-bottom: 50px; font-family: 'Playfair Display'; font-size: 2rem;">Make a wish & Click to blow</h2>
+        <div class="cake-container" onclick="blowCandle()">
+            <div class="flame" id="flame"></div>
+            <div class="candle"></div>
+            <div class="cake-body"></div>
+        </div>
+        <p id="wishStatus" style="margin-top: 20px; color: var(--text-dim);"></p>
+    </section>
+
+    <!-- Section 4: Final Message -->
+    <section class="letter-section">
+        <div class="letter-content" id="finalLetter">
+            "Every year with you is a new favorite chapter. I'm so incredibly lucky to know you, to laugh with you, and to celebrate you today. May your day be as stunning as your heart."
+            <br><br>
+            <span style="color: var(--accent-primary); font-size: 1.5rem;">— Always, Me</span>
+        </div>
+    </section>
+
+    <script>
+        // GSAP Scroll Trigger Initialization
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Custom Cursor Logic
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.1
+            });
+        });
+
+        // Hero Animations
+        window.onload = () => {
+            const tl = gsap.timeline();
+            tl.to("#mainTitle", { opacity: 1, y: 0, duration: 1.5, ease: "power4.out" })
+              .to("#heroSub", { opacity: 1, duration: 1 }, "-=1");
+        };
+
+        // Bento Grid Reveal
+        gsap.from(".bento-item", {
+            scrollTrigger: {
+                trigger: ".bento-grid",
+                start: "top 80%",
+            },
+            y: 50,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: "power3.out"
+        });
+
+        // Final Letter Reveal
+        gsap.to("#finalLetter", {
+            scrollTrigger: {
+                trigger: ".letter-section",
+                start: "top 60%",
+            },
+            opacity: 1,
+            y: -20,
+            duration: 2,
+            ease: "power2.out"
+        });
+
+        // Cake Interaction
+        function blowCandle() {
+            const flame = document.getElementById('flame');
+            const status = document.getElementById('wishStatus');
+            
+            if(!flame.classList.contains('extinguished')) {
+                flame.classList.add('extinguished');
+                status.innerText = "Wish Sent to the Universe ✨";
+                
+                // Confetti Explosion
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#ff3e8d', '#7000ff', '#ffffff']
+                });
+
+                // Extra subtle confetti
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#ff3e8d', '#7000ff']
+                    });
+                    confetti({
+                        particleCount: 50,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#ff3e8d', '#7000ff']
+                    });
+                }, 400);
+            }
+        }
+
+        // Optional: Microphone "Blow" detection (Modern 2025 touch)
+        // Note: Browsers require user interaction before mic access
+        async function initMic() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const audioContext = new AudioContext();
+                const analyzer = audioContext.createAnalyser();
+                const microphone = audioContext.createMediaStreamSource(stream);
+                const javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
+
+                analyzer.smoothingTimeConstant = 0.8;
+                analyzer.fftSize = 1024;
+
+                microphone.connect(analyzer);
+                analyzer.connect(javascriptNode);
+                javascriptNode.connect(audioContext.destination);
+
+                javascriptNode.onaudioprocess = function() {
+                    const array = new Uint8Array(analyzer.frequencyBinCount);
+                    analyzer.getByteFrequencyData(array);
+                    let values = 0;
+
+                    for (let i = 0; i < array.length; i++) {
+                        values += array[i];
+                    }
+
+                    const average = values / array.length;
+                    if (average > 50) { // Threshold for "blowing"
+                        blowCandle();
+                    }
+                };
+            } catch (err) {
+                console.log("Mic access denied or not available. Use click to blow.");
+            }
+        }
+
+        // Initialize mic after first scroll or click to comply with browser policies
+        window.addEventListener('click', () => {
+            // Optional: initMic(); // Uncomment to enable microphone blowing
+        }, { once: true });
+
+    </script>
+</body>
+</html>
